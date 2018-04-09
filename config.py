@@ -16,4 +16,7 @@ tf.app.flags.DEFINE_integer("UNK", 1, 'token for unkown word')
 tf.app.flags.DEFINE_integer("START", 2, "token for start of sentence(only target language)")
 tf.app.flags.DEFINE_integer("END", 3, "token for end of sentence(only target language)")
 
+# path
+tf.app.flags.DEFINE_string("model_path", './models', "model save path")
+
 FLAGS = tf.app.flags.FLAGS

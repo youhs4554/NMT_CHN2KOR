@@ -155,6 +155,7 @@ class Dataset(object):
             self.words_list['target_words'].extend(target_sent.split())
 
             sents_pair = (' '.join(cur_src_words), target_sent+' '+'<end>')
+
             self.samples.append(sents_pair)
 
         self.word2ix = dict(src=None, target=None)
@@ -213,39 +214,40 @@ class Batcher(object):
         return self.batch_generator.next()
 
 
-# step 1.
-# merge_and_encode(root_dir='../NMT_data/chosun-form1',
-#                  fname='raw_utf-8-1.txt')
-# merge_and_encode(root_dir='../NMT_data/chosun-form2',
-#                  fname='raw_utf-8-2.txt')
+if __name__=='__main__':
+    # step 1.
+    merge_and_encode(root_dir='../NMT_data/chosun-form1',
+                     fname='./data/raw_utf-8.txt')
+    # merge_and_encode(root_dir='../NMT_data/chosun-form2',
+    #                  fname='./data/raw_utf-8-2.txt')
 
-# step 2. make each corpora text file
-# preprocess_rawcorpus(raw_corpus_path='./data/raw_utf-8-1.txt',
-#                      kor_file_path='./data/raw_corpora-1.ko',
-#                      hanja_file_path='./data/raw_corpora-1.hanja', sep=u'【태백산사고본】')
-# preprocess_rawcorpus(raw_corpus_path='./data/raw_utf-8-2.txt',
-#                      kor_file_path='./data/raw_corpora-2.ko',
-#                      hanja_file_path='./data/raw_corpora-2.hanja', sep=u'【원본】')
-# concat all text file as one file
-# for k,h in zip(glob.glob('./data/raw_corpora-*.ko'), glob.glob('./data/raw_corpora-*.hanja')):
-#     os.system('cat {}>>./data/raw_corpora.ko'.format(k))
-#     os.system('cat {}>>./data/raw_corpora.hanja'.format(h))
-#     os.remove(k); os.remove(h)
+    # step 2. make each corpora text file
+    preprocess_rawcorpus(raw_corpus_path='./data/raw_utf-8.txt',
+                         kor_file_path='./data/raw_corpora.ko',
+                         hanja_file_path='./data/raw_corpora.hanja', sep=u'【태백산사고본】')
+    # preprocess_rawcorpus(raw_corpus_path='./data/raw_utf-8-2.txt',
+    #                      kor_file_path='./data/raw_corpora-2.ko',
+    #                      hanja_file_path='./data/raw_corpora-2.hanja', sep=u'【원본】')
+    # concat all text file as one file
+    # for k,h in zip(glob.glob('./data/raw_corpora-*.ko'), glob.glob('./data/raw_corpora-*.hanja')):
+    #     os.system('cat {}>>./data/raw_corpora.ko'.format(k))
+    #     os.system('cat {}>>./data/raw_corpora.hanja'.format(h))
+    #     os.remove(k); os.remove(h)
 
-# step 3. preprocess & save dataset
-# dataset = Dataset(src_file='./data/raw_corpora.hanja', target_file='./data/raw_corpora.ko', vocab_size=40000)
+    # step 3. preprocess & save dataset
+    dataset = Dataset(src_file='./data/raw_corpora.hanja', target_file='./data/raw_corpora.ko', vocab_size=40000)
 
-# # load from files
-# train_set = pickle.load(file('./data/train.pkl', 'rb'))
-# valid_set = pickle.load(file('./data/train.pkl', 'rb'))
-# test_set = pickle.load(file('./data/train.pkl', 'rb'))
-# word2ix = pickle.load(file('./data/word2ix.pkl', 'rb'))
-#
-# train_batcher = Batcher(train_set, batch_size=10)
-# b = train_batcher.next_batch()
-#
-# ix2word = dict(src=None, target=None)
-# ix2word['src'] = dict(zip(word2ix['src'].values(), word2ix['src'].keys()))
-# ix2word['target'] = dict(zip(word2ix['target'].values(), word2ix['target'].keys()))
-#
-# print ' '.join([ix2word['target'][i] for i in b['target_ixs'][5]])
+    # # load from files
+    # train_set = pickle.load(file('./data/train.pkl', 'rb'))
+    # valid_set = pickle.load(file('./data/train.pkl', 'rb'))
+    # test_set = pickle.load(file('./data/train.pkl', 'rb'))
+    # word2ix = pickle.load(file('./data/word2ix.pkl', 'rb'))
+    #
+    # train_batcher = Batcher(train_set, batch_size=10)
+    # b = train_batcher.next_batch()
+    #
+    # ix2word = dict(src=None, target=None)
+    # ix2word['src'] = dict(zip(word2ix['src'].values(), word2ix['src'].keys()))
+    # ix2word['target'] = dict(zip(word2ix['target'].values(), word2ix['target'].keys()))
+    #
+    # print ' '.join([ix2word['target'][i] for i in b['target_ixs'][5]])
