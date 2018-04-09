@@ -25,29 +25,33 @@ def Build_Teaching_Model(src_vocab_size, target_vocab_size):
     src_embeddings = tf.get_variable('src_embeddings', [src_vocab_size, dim_emb])
     target_embeddings = tf.get_variable('target_embeddings', [target_vocab_size, dim_emb])
 
-    # Encoder
-    encoder_cell = tf.nn.rnn_cell.LSTMCell(num_units=num_units)
-    encoder_cell = tf.nn.rnn_cell.DropoutWrapper(encoder_cell, output_keep_prob=keep_prob)
-    encoder_cell = tf.nn.rnn_cell.MultiRNNCell([encoder_cell] * num_layers)
+    # Encoder (bidirectional)
+    encoder_cell_fw = tf.nn.rnn_cell.LSTMCell(num_units=num_units)
+    encoder_cell_fw = tf.nn.rnn_cell.DropoutWrapper(encoder_cell_fw, output_keep_prob=keep_prob)
+    encoder_cell_fw = tf.nn.rnn_cell.MultiRNNCell([encoder_cell_fw] * num_layers)
+
+    encoder_cell_bw = tf.nn.rnn_cell.LSTMCell(num_units=num_units)
+    encoder_cell_bw = tf.nn.rnn_cell.DropoutWrapper(encoder_cell_bw, output_keep_prob=keep_prob)
+    encoder_cell_bw = tf.nn.rnn_cell.MultiRNNCell([encoder_cell_bw] * num_layers)
 
     # embedding layer for src language
     encoder_embed = tf.nn.embedding_lookup(src_embeddings, x)
 
     # encoder projection
-    encoder_projection_layer = Dense(num_units, name='encoder_projection')
-    encoder_inp = encoder_projection_layer.apply(encoder_embed)
+    encoder_inp = tf.layers.dense(encoder_embed,num_units,name='encoder_projection')
 
     # RNN Encoder Network
-    encoder_outputs, encoder_states = tf.nn.dynamic_rnn(cell=encoder_cell, inputs=encoder_inp,
-                                                        sequence_length=len_x,
-                                                        dtype='float32',
-                                                        scope='encoder')
+    encoder_outputs, _ = tf.nn.bidirectional_dynamic_rnn(cell_fw=encoder_cell_fw,
+                                                         cell_bw=encoder_cell_bw,
+                                                         inputs=encoder_inp,
+                                                         dtype='float32',
+                                                         scope='encoder')
 
-    # Decoder (Dynamic) with attention
+    encoder_outputs_concat = tf.concat(encoder_outputs, axis=-1)
 
     # specify attention mechanism
     attention_mechanism = tf.contrib.seq2seq.BahdanauAttention(num_units=num_units,
-                                                               memory=encoder_outputs,
+                                                               memory=encoder_outputs_concat,
                                                                memory_sequence_length=len_x)
 
     decoder_cell = []
