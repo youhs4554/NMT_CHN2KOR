@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 # model config
-tf.app.flags.DEFINE_integer("batch_size", 64, "batch size")
+tf.app.flags.DEFINE_integer("batch_size", 16, "batch size")
 tf.app.flags.DEFINE_integer("num_units", 1024, "number of LSTM units")
 tf.app.flags.DEFINE_integer("num_layers", 2, "number of layers of RNN network")
 tf.app.flags.DEFINE_integer("dim_emb", 300, "dimension of word embedding")

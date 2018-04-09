@@ -269,5 +269,5 @@ def eval():
         with file(hypo_path, 'w' if not os.path.exists(hypo_path) else 'a') as g:
             g.write(hypo.encode('utf-8')+'\n')
 
-#train()
-eval()
+train()
+#eval()

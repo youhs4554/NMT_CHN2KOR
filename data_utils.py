@@ -233,7 +233,7 @@ class Batcher(object):
 #     os.remove(k); os.remove(h)
 
 # step 3. preprocess & save dataset
-dataset = Dataset(src_file='./data/raw_corpora.hanja', target_file='./data/raw_corpora.ko', vocab_size=40000)
+# dataset = Dataset(src_file='./data/raw_corpora.hanja', target_file='./data/raw_corpora.ko', vocab_size=40000)
 
 # # load from files
 # train_set = pickle.load(file('./data/train.pkl', 'rb'))
