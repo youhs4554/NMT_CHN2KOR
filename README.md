@@ -1,9 +1,5 @@
 # NMT_CRC
 NMT development for CRC project
 
-# Download Chunk Data Link (chunk-100)
-```
-  sh download.sh
-```
-
-
+# Chunk Data Link (chunk-100)
+<https://drive.google.com/open?id=17hZoHkcV9DlTQ7up7VdEKzt55XEVYO0R>
