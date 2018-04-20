@@ -172,7 +172,8 @@ def train():
 
         if step % FLAGS.valid_step == 0:
             valid_batch = valid_batcher.next_batch()
-
+            if np.any(np.max(valid_batch['src_ixs'], axis=1) == 0) or np.any(
+                np.max(valid_batch['target_ixs'], axis=1) == 0): continue
             valid_feed = {x: valid_batch['src_ixs'], y: valid_batch['target_ixs'],
                           keep_prob: 1.0}
 
