@@ -2,12 +2,30 @@ import tensorflow as tf
 from tensorflow.python.layers.core import Dense
 from config import FLAGS
 import os
+import numpy as np
 
 # model configuration
 batch_size = FLAGS.batch_size
 num_units = FLAGS.num_units
 num_layers = FLAGS.num_layers
 dim_emb = FLAGS.dim_emb
+
+####
+from config import FLAGS
+import pickle
+from data_utils import Batcher
+
+# load from files
+train_set = pickle.load(file('./data/train.pkl', 'rb'))
+valid_set = pickle.load(file('./data/valid.pkl', 'rb'))
+test_set = pickle.load(file('./data/test.pkl', 'rb'))
+word2ix = pickle.load(file('./data/word2ix.pkl', 'rb'))
+
+# prepare ix2word
+ix2word = dict(src=None, target=None)
+ix2word['src'] = dict(zip(word2ix['src'].values(), word2ix['src'].keys()))
+ix2word['target'] = dict(zip(word2ix['target'].values(), word2ix['target'].keys()))
+
 
 def Build_NMT_Model(x,y,decoding_mask,learning_rate,keep_prob,
                     src_vocab_size, target_vocab_size, is_train, maxlen=100):
@@ -85,21 +103,6 @@ def Build_NMT_Model(x,y,decoding_mask,learning_rate,keep_prob,
 
     return decoder_outputs
 
-####
-from config import FLAGS
-import pickle
-from data_utils import Batcher
-
-# load from files
-train_set = pickle.load(file('./data/train.pkl', 'rb'))
-valid_set = pickle.load(file('./data/valid.pkl', 'rb'))
-test_set = pickle.load(file('./data/test.pkl', 'rb'))
-word2ix = pickle.load(file('./data/word2ix.pkl', 'rb'))
-
-# prepare ix2word
-ix2word = dict(src=None, target=None)
-ix2word['src'] = dict(zip(word2ix['src'].values(), word2ix['src'].keys()))
-ix2word['target'] = dict(zip(word2ix['target'].values(), word2ix['target'].keys()))
 
 def train():
     train_batcher = Batcher(train_set, batch_size=batch_size)
@@ -148,13 +151,13 @@ def train():
 
     saver = tf.train.Saver()
 
-    writer_train = tf.summary.FileWriter('./logs/train', graph=sess.graph)
-    writer_valid = tf.summary.FileWriter('./logs/valid', graph=sess.graph)
+    writer_train = tf.summary.FileWriter(os.path.join(FLAGS.log_path,'train'), graph=sess.graph)
+    writer_valid = tf.summary.FileWriter(os.path.join(FLAGS.log_path,'valid'), graph=sess.graph)
 
     # train loop
     while True:
         train_batch = train_batcher.next_batch()
-
+        if np.any(np.max(train_batch['src_ixs'], axis=1)==0) or np.any(np.max(train_batch['target_ixs'], axis=1)==0): continue
         train_feed = { x:train_batch['src_ixs'], y:train_batch['target_ixs'],
                        learning_rate : 1e-4,
                        keep_prob : 0.5 }
@@ -180,7 +183,7 @@ def train():
 
         if step % FLAGS.save_ckpt_step == 0:
             # save trained model
-            saver.save(sess, 'models/step', global_step=step)
+            saver.save(sess, FLAGS.model_path, global_step=step)
 
 def eval():
     valid_batcher = Batcher(valid_set, batch_size=1)
@@ -199,16 +202,16 @@ def eval():
 
     sess = tf.Session()
 
-    sess.run(tf.global_variables_initializer())
+    #sess.run(tf.global_variables_initializer())
 
     saver = tf.train.Saver()
 
     ckpt = tf.train.latest_checkpoint(FLAGS.model_path)
 
-    # if ckpt:
-    #     saver.restore(sess, ckpt)
-    # else:
-    #     raise IOError("Pre-trained model is required at './models'")
+    if ckpt:
+        saver.restore(sess, ckpt)
+    else:
+        raise IOError("Pre-trained model is required at './models'")
 
     while True:
         valid_batch = valid_batcher.next_batch()
@@ -220,7 +223,6 @@ def eval():
 
         hypo = ' '.join(ix2word['target'][i] for i in generated_sent[0])
         gold = ' '.join(ix2word['target'][i] for i in valid_batch['target_ixs'][0])
-
         gold_path = 'result.gold.txt'
         hypo_path = 'result.hypo.txt'
 

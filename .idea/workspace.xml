@@ -82,7 +82,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-1" />
     <option name="y" value="30" />
     <option name="width" value="1922" />
@@ -152,18 +152,58 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.data_utils">
+  <component name="RunManager" selected="Python.COCOEval_scores">
     <configuration name="download.sh" type="BashConfigurationType" factoryName="Bash">
+      <module name="NMT" />
       <option name="INTERPRETER_OPTIONS" value="bash" />
       <option name="INTERPRETER_PATH" value="/usr/bin/env" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/download.sh" />
       <option name="PARAMETERS" value="" />
+    </configuration>
+    <configuration name="COCOEval_scores" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="NMT" />
-      <envs />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="CUDA_HOME" value="/usr/local/cuda" />
+        <env name="LD_LIBRARY_PATH" value="$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/.virtualenvs/NMT/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/COCOEval_scores.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="NMTEval_scores" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="NMT" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="CUDA_HOME" value="/usr/local/cuda" />
+        <env name="LD_LIBRARY_PATH" value="$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/.virtualenvs/NMT/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/NMTEval_scores.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
     </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="NMT" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -176,7 +216,6 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="NMT" />
       <option name="SCRIPT_NAME" value="" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -184,6 +223,7 @@
       <option name="MODULE_MODE" value="false" />
     </configuration>
     <configuration name="data_utils" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="NMT" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -196,7 +236,6 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="NMT" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/data_utils.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -204,6 +243,7 @@
       <option name="MODULE_MODE" value="false" />
     </configuration>
     <configuration name="model" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="NMT" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -216,27 +256,27 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="NMT" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/model.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <list size="3">
-      <item index="0" class="java.lang.String" itemvalue="Bash.download.sh" />
-      <item index="1" class="java.lang.String" itemvalue="Python.model" />
-      <item index="2" class="java.lang.String" itemvalue="Python.data_utils" />
+    <list>
+      <item itemvalue="Bash.download.sh" />
+      <item itemvalue="Python.model" />
+      <item itemvalue="Python.data_utils" />
+      <item itemvalue="Python.NMTEval_scores" />
+      <item itemvalue="Python.COCOEval_scores" />
     </list>
     <recent_temporary>
-      <list size="2">
-        <item index="0" class="java.lang.String" itemvalue="Python.data_utils" />
-        <item index="1" class="java.lang.String" itemvalue="Python.model" />
+      <list>
+        <item itemvalue="Python.COCOEval_scores" />
+        <item itemvalue="Python.NMTEval_scores" />
+        <item itemvalue="Python.data_utils" />
+        <item itemvalue="Python.model" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="ShelveChangesManager" show_recycled="false">
-    <option name="remove_strategy" value="false" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
