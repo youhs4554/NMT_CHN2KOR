@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.python.layers.core import Dense
 from config import FLAGS
-import os
+import os, sys
 import numpy as np
 
 # model configuration
@@ -16,9 +16,11 @@ import pickle
 from data_utils import Batcher
 
 # load from files
-train_set = pickle.load(file('./data/train.pkl', 'rb'))
-valid_set = pickle.load(file('./data/valid.pkl', 'rb'))
-test_set = pickle.load(file('./data/test.pkl', 'rb'))
+train_set = pickle.load(file('./data_eval/train.pkl', 'rb'))
+valid_set = pickle.load(file('./data_eval/valid.pkl', 'rb'))
+test_set = pickle.load(file('./data_eval/test.pkl', 'rb'))
+
+# eval_set = pickle.load(file('./data_eval/samples.pkl','rb'))
 word2ix = pickle.load(file('./data/word2ix.pkl', 'rb'))
 
 # prepare ix2word
@@ -27,35 +29,46 @@ ix2word['src'] = dict(zip(word2ix['src'].values(), word2ix['src'].keys()))
 ix2word['target'] = dict(zip(word2ix['target'].values(), word2ix['target'].keys()))
 
 
-def Build_NMT_Model(x,y,decoding_mask,learning_rate,keep_prob,
-                    src_vocab_size, target_vocab_size, is_train, maxlen=100):
+def RNNCellWrapper(num_units, num_layers, keep_prob, attention=False, attention_mechanism=None, attention_layer_size=None):
+    cells = []
+    for _ in range(num_layers):
+        cell = tf.nn.rnn_cell.GRUCell(num_units=num_units)
+        cell = tf.nn.rnn_cell.DropoutWrapper(cell, output_keep_prob=keep_prob)
+        cells.append(cell)
+
+    cell = tf.nn.rnn_cell.MultiRNNCell(cells)
+
+    if attention:
+        # decoder cell with attention
+        cell = tf.contrib.seq2seq.AttentionWrapper(cell, attention_mechanism, attention_layer_size=attention_layer_size)
+        cell = tf.nn.rnn_cell.DropoutWrapper(cell, output_keep_prob=keep_prob)
+
+    return cell
+
+
+def Build_NMT_Model(x,y,decoding_mask, keep_prob,
+                    src_embeddings, target_embeddings, is_train, maxlen=100):
     # len_x
     len_x = tf.reduce_sum(tf.sign(x), axis=1)
 
-    src_embeddings = tf.get_variable('src_embeddings', [src_vocab_size, dim_emb])
-    target_embeddings = tf.get_variable('target_embeddings', [target_vocab_size, dim_emb])
-
     # Encoder (bidirectional)
-    encoder_cell_fw = tf.nn.rnn_cell.LSTMCell(num_units=num_units)
-    encoder_cell_fw = tf.nn.rnn_cell.DropoutWrapper(encoder_cell_fw, output_keep_prob=keep_prob)
-    encoder_cell_fw = tf.nn.rnn_cell.MultiRNNCell([encoder_cell_fw] * num_layers)
+    encoder_cell_fw = RNNCellWrapper(num_units=num_units,
+                                     num_layers=num_layers,
+                                     keep_prob= keep_prob)
 
-    encoder_cell_bw = tf.nn.rnn_cell.LSTMCell(num_units=num_units)
-    encoder_cell_bw = tf.nn.rnn_cell.DropoutWrapper(encoder_cell_bw, output_keep_prob=keep_prob)
-    encoder_cell_bw = tf.nn.rnn_cell.MultiRNNCell([encoder_cell_bw] * num_layers)
+    encoder_cell_bw = RNNCellWrapper(num_units=num_units,
+                                     num_layers=num_layers,
+                                     keep_prob= keep_prob)
 
     # embedding layer for src language
     encoder_embed = tf.nn.embedding_lookup(src_embeddings, x)
 
-    # encoder projection
-    encoder_inp = tf.layers.dense(encoder_embed,num_units,name='encoder_projection')
-
     # RNN Encoder Network
-    encoder_outputs, _ = tf.nn.bidirectional_dynamic_rnn(cell_fw=encoder_cell_fw,
-                                                         cell_bw=encoder_cell_bw,
-                                                         inputs=encoder_inp,
-                                                         dtype='float32',
-                                                         scope='encoder')
+    encoder_outputs, encoder_state = tf.nn.bidirectional_dynamic_rnn(cell_fw=encoder_cell_fw,
+                                                                     cell_bw=encoder_cell_bw,
+                                                                     inputs=encoder_embed,
+                                                                     dtype='float32',
+                                                                     scope='encoder')
 
     encoder_outputs_concat = tf.concat(encoder_outputs, axis=-1)
 
@@ -64,15 +77,10 @@ def Build_NMT_Model(x,y,decoding_mask,learning_rate,keep_prob,
                                                                memory=encoder_outputs_concat,
                                                                memory_sequence_length=len_x)
 
-    decoder_cell = []
-    for _ in range(num_layers):
-        _cell = tf.nn.rnn_cell.LSTMCell(num_units=num_units)
-        _cell = tf.nn.rnn_cell.DropoutWrapper(_cell, output_keep_prob=keep_prob)
-        decoder_cell.append(_cell)
-
-    decoder_cell = tf.nn.rnn_cell.MultiRNNCell(decoder_cell)
-    decoder_cell = tf.contrib.seq2seq.AttentionWrapper(decoder_cell, attention_mechanism,
-                                                       attention_layer_size=num_units)  # decoder cell with attention
+    decoder_cell = RNNCellWrapper(num_units=num_units,
+                                  num_layers=num_layers,
+                                  keep_prob=keep_prob,
+                                  attention=True, attention_mechanism=attention_mechanism, attention_layer_size=num_units)
 
     if is_train:
         y_shifted = tf.concat([tf.fill([batch_size, 1], FLAGS.START), y[:, :-1]], 1)
@@ -90,7 +98,7 @@ def Build_NMT_Model(x,y,decoding_mask,learning_rate,keep_prob,
                                                           FLAGS.END)
 
     # decoder projection
-    decoder_projection_layer = Dense(target_vocab_size, use_bias=False, name='decoder_projection')
+    decoder_projection_layer = Dense(target_embeddings.get_shape().as_list()[0], use_bias=False, name='decoder_projection')
 
     # decoder
     decoder = tf.contrib.seq2seq.BasicDecoder(
@@ -104,7 +112,7 @@ def Build_NMT_Model(x,y,decoding_mask,learning_rate,keep_prob,
     return decoder_outputs
 
 
-def train():
+def train(fine_tune):
     train_batcher = Batcher(train_set, batch_size=batch_size)
     valid_batcher = Batcher(valid_set, batch_size=batch_size)
 
@@ -120,8 +128,14 @@ def train():
     # decoding mask
     decoding_mask = tf.cast(tf.sign(y), 'float32')
 
-    decoder_outputs = Build_NMT_Model(x=x,y=y,decoding_mask=decoding_mask,learning_rate=learning_rate,keep_prob=keep_prob,
-                                      src_vocab_size=src_vocab_size, target_vocab_size=target_vocab_size, is_train=True)
+    train_src = True
+    train_target = False if fine_tune else True
+
+    src_embeddings = tf.get_variable('src_embeddings', [src_vocab_size, dim_emb], trainable=train_src)
+    target_embeddings = tf.get_variable('target_embeddings', [target_vocab_size, dim_emb], trainable=train_target)
+
+    decoder_outputs = Build_NMT_Model(x=x,y=y,decoding_mask=decoding_mask, keep_prob=keep_prob,
+                                      src_embeddings=src_embeddings, target_embeddings=target_embeddings, is_train=True)
 
     # logits
     logits = decoder_outputs.rnn_output
@@ -147,47 +161,77 @@ def train():
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss, global_step=global_step)
 
     sess = tf.Session()
+
     sess.run(tf.global_variables_initializer())
 
-    saver = tf.train.Saver()
+    var_list = tf.trainable_variables()
+    if fine_tune:
+        var_list.append(target_embeddings)
+
+    # savers
+    saver = tf.train.Saver(var_list=var_list)
+
+    pretrained_model_path = FLAGS.pretrained_model_path
+    save_model_path = FLAGS.save_model_path
+
+    if not fine_tune:
+         save_model_path = pretrained_model_path
+
+    if fine_tune:
+        ckpt = tf.train.latest_checkpoint(pretrained_model_path)
+        print 'restore pre-trained params from {} ...'.format(os.path.splitext(ckpt)[0])
+        saver.restore(sess, ckpt)
+
+    trace_ckpt = tf.train.latest_checkpoint(save_model_path)
+    if trace_ckpt:
+        print 'restore all params from {} ...'.format(os.path.splitext(trace_ckpt)[0])
+        saver.restore(sess, trace_ckpt)
 
     writer_train = tf.summary.FileWriter(os.path.join(FLAGS.log_path,'train'), graph=sess.graph)
     writer_valid = tf.summary.FileWriter(os.path.join(FLAGS.log_path,'valid'), graph=sess.graph)
 
     # train loop
+    last_100_losses = []
     while True:
         train_batch = train_batcher.next_batch()
         if np.any(np.max(train_batch['src_ixs'], axis=1)==0) or np.any(np.max(train_batch['target_ixs'], axis=1)==0): continue
         train_feed = { x:train_batch['src_ixs'], y:train_batch['target_ixs'],
-                       learning_rate : 1e-4,
-                       keep_prob : 0.5 }
+                       learning_rate : 1e-4, keep_prob : 0.5 }
 
         _, train_loss, train_summary = sess.run([optimizer, loss, loss_summary], feed_dict=train_feed)
 
+
         step = global_step.eval(sess)
+
+        summerize = step % 100 == 0
 
         writer_train.add_summary(train_summary, step)
 
-        print 'step : {0}, train_loss : {1:.4f}'.format(step, train_loss)
+        last_100_losses.append(train_loss)
+
+        if summerize:
+            print('step : {0}, avg_train_loss : {1:.4f}'.format(step, np.mean(last_100_losses)))
+            last_100_losses = []
 
         if step % FLAGS.valid_step == 0:
             valid_batch = valid_batcher.next_batch()
             if np.any(np.max(valid_batch['src_ixs'], axis=1) == 0) or np.any(
                 np.max(valid_batch['target_ixs'], axis=1) == 0): continue
-            valid_feed = {x: valid_batch['src_ixs'], y: valid_batch['target_ixs'],
-                          keep_prob: 1.0}
+            valid_feed = { x: valid_batch['src_ixs'], y: valid_batch['target_ixs'] , keep_prob : 1.0 }
 
             valid_loss, valid_summary = sess.run([loss, loss_summary], feed_dict=valid_feed)
             writer_valid.add_summary(valid_summary, step)
 
-            print '@@@ step : {0}, valid_loss : {1:.4f}'.format(step, valid_loss)
+            print('@@@ step : {0}, valid_loss : {1:.4f}'.format(step, valid_loss))
 
         if step % FLAGS.save_ckpt_step == 0:
             # save trained model
-            saver.save(sess, FLAGS.model_path, global_step=step)
+            saver.save(sess, os.path.join(save_model_path,'step'), global_step=step)
+
+
 
 def eval():
-    valid_batcher = Batcher(valid_set, batch_size=1)
+    batcher = Batcher(test_set, batch_size=batch_size)
 
     src_vocab_size = len(ix2word['src'])
     target_vocab_size = len(ix2word['target'])
@@ -195,8 +239,11 @@ def eval():
     x = tf.placeholder('int32', [batch_size,None])
     keep_prob = tf.placeholder('float32')
 
-    decoder_outputs = Build_NMT_Model(x=x, y=None, decoding_mask=None, learning_rate=None, keep_prob=keep_prob,
-                                      src_vocab_size=src_vocab_size, target_vocab_size=target_vocab_size, is_train=False)
+    src_embeddings = tf.get_variable('src_embeddings', [src_vocab_size, dim_emb])
+    target_embeddings = tf.get_variable('target_embeddings', [target_vocab_size, dim_emb])
+
+    decoder_outputs = Build_NMT_Model(x=x, y=None, decoding_mask=None, keep_prob=keep_prob,
+                                      src_embeddings=src_embeddings, target_embeddings=target_embeddings, is_train=False)
 
     # generated sentences
     generated = decoder_outputs.sample_id
@@ -207,30 +254,60 @@ def eval():
 
     saver = tf.train.Saver()
 
-    ckpt = tf.train.latest_checkpoint(FLAGS.model_path)
+    ckpt = tf.train.latest_checkpoint(FLAGS.save_model_path)
 
     if ckpt:
         saver.restore(sess, ckpt)
     else:
-        raise IOError("Pre-trained model is required at './models'")
+        raise IOError("Pre-trained model is required")
+
+
+    datasetGold = dict(annotations=[])
+    datasetHypo = dict(annotations=[])
+
+    cnt = 0
 
     while True:
-        valid_batch = valid_batcher.next_batch()
+        cur_batch = batcher.next_batch()
 
-        valid_feed = {x: valid_batch['src_ixs'],
-                      keep_prob: 1.0}
+        try:
+            if np.any(np.max(cur_batch['src_ixs'], axis=1)==0) or np.any(np.max(cur_batch['target_ixs'], axis=1)==0):
+                continue
 
-        generated_sent = sess.run(generated, feed_dict=valid_feed)
+        except:
+            import ipdb
+            ipdb.set_trace()
 
-        hypo = ' '.join(ix2word['target'][i] for i in generated_sent[0])
-        gold = ' '.join(ix2word['target'][i] for i in valid_batch['target_ixs'][0])
-        gold_path = 'result.gold.txt'
-        hypo_path = 'result.hypo.txt'
+        if batcher.epoch > 0:
+            break
 
-        with file(gold_path, 'w' if not os.path.exists(gold_path) else 'a') as f:
-            f.write(gold.encode('utf-8')+'\n')
-        with file(hypo_path, 'w' if not os.path.exists(hypo_path) else 'a') as g:
-            g.write(hypo.encode('utf-8')+'\n')
+        eval_feed = {x: cur_batch['src_ixs'],
+                     keep_prob: 1.0}
 
-train()
-#eval()
+        generated_sent = sess.run(generated, feed_dict=eval_feed)
+
+        hypo = [ ix2word['target'][i] for i in generated_sent[0] ]
+        hypo_truncated = ' '.join(hypo[:np.argmax(np.array(hypo)=='<end>')])
+
+        gold = cur_batch['target_sent'][0].split()
+        gold_truncated = ' '.join(gold[:np.argmax(np.array(gold)=='<end>')])
+
+        datasetGold['annotations'].append(dict(sentence_id=cnt, caption=gold_truncated))
+        datasetHypo['annotations'].append(dict(sentence_id=cnt, caption=hypo_truncated))
+
+        #print ' '.join(hypo)
+        #print cur_batch['target_sent'][0]
+
+        #import ipdb
+        #ipdb.set_trace()
+
+
+        cnt += 1
+        print cnt
+
+    pickle.dump(datasetGold, file('./data_eval/gold_val.pkl', 'wb'))
+    pickle.dump(datasetHypo, file('./data_eval/hypo_val.pkl', 'wb'))
+
+
+# train(fine_tune=True)
+eval()

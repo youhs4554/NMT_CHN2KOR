@@ -95,13 +95,9 @@ def calculate_metrics(rng,datasetGTS,datasetRES):
     return evalObj.eval
 
 if __name__ == '__main__':
-    rng = range(2)
-    datasetGTS = {
-        'annotations': [{u'sentence_id': 0, u'caption': u'춘당대 에 거둥 하여 경모궁 에 상 이 행차 하 었 을 때 수행 하 ㄴ 장신 과 무사 등 의 시사 를 행하 였 다'},
-                        {u'sentence_id': 1, u'caption': u'사복시 가 아뢰 었 다 팔 도 의 각 목장 에서 금년 현재 방목 하 고 있 는 암수 의 말 이 모두 6 천 8 백 76 필 이 ㅂ니다'}]
-        }
-    datasetRES = {
-        'annotations': [{u'sentence_id': 0, u'caption': u'경모궁 에 상 이 행차 하 었 을 때 수행 하 ㄴ 노비 와 무사 등 의 시사 를 행하 였 다'},
-                        {u'sentence_id': 1, u'caption': u'사복시 가 아뢰 었 다 팔 도 의 각 목장 에서 현재 방목 중인 암수 의 소 는 모두 6 천 필 이 ㅂ니다'}]
-        }
+    import json
+    datasetGTS = json.load(file('./data/gold_val.json', 'rb'))
+    datasetRES = json.load(file('./data/hypo_val.json', 'rb'))
+    rng = range(len(datasetGTS['annotations']))
+
     print calculate_metrics(rng,datasetGTS,datasetRES)

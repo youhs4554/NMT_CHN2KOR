@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 # model config
-tf.app.flags.DEFINE_integer("batch_size", 16, "batch size")
+tf.app.flags.DEFINE_integer("batch_size", 1, "batch size")
 tf.app.flags.DEFINE_integer("num_units", 1024, "number of LSTM units")
 tf.app.flags.DEFINE_integer("num_layers", 2, "number of layers of RNN network")
 tf.app.flags.DEFINE_integer("dim_emb", 300, "dimension of word embedding")
@@ -17,7 +17,8 @@ tf.app.flags.DEFINE_integer("START", 2, "token for start of sentence(only target
 tf.app.flags.DEFINE_integer("END", 3, "token for end of sentence(only target language)")
 
 # path
-tf.app.flags.DEFINE_string("model_path", '../NMT_save/models/step', "model save path")
+tf.app.flags.DEFINE_string("pretrained_model_path", '../NMT_save/models', "model save path")
+tf.app.flags.DEFINE_string("save_model_path", '../NMT_save/models_diary', "model save path")
 tf.app.flags.DEFINE_string("log_path", '../NMT_save/logs', "model save path")
 
 

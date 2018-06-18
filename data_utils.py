@@ -63,18 +63,18 @@ class Dataset(object):
     def __init__(self, src_file, target_file, vocab_size, train_ratio=0.7, test_ratio=0.3):
         self.create_vocab(src_file, target_file, vocab_size)
         # convert word to ix
-        for n, (src, target) in enumerate(self.samples):
-            src_ixs = [];
+        for n, (src_sent, target_sent) in enumerate(self.samples):
+            src_ixs = []
             target_ixs = []
-            for w in src.split():
+            for w in src_sent.split():
                 w = '<unk>' if w not in self.word2ix['src'] else w
                 src_ixs.append(self.word2ix['src'][w])
 
-            for w in target.split():
+            for w in target_sent.split():
                 w = '<unk>' if w not in self.word2ix['target'] else w
                 target_ixs.append(self.word2ix['target'][w])
 
-            self.samples[n] = src_ixs, target_ixs
+            self.samples[n] = dict(src_sent=src_sent,src_ixs=src_ixs, target_sent=target_sent, target_ixs=target_ixs)
 
         self.n = len(self.samples)
         self.train = self.samples[:int(self.n * train_ratio)]
@@ -181,34 +181,38 @@ class Batcher(object):
         self.dataset = dataset
         self.batch_size = batch_size
         self.batch_generator = self.batch_generator()
+        self.epoch = 0
 
     def batch_generator(self):
         start = 0
         while True:
-            cur_batch = dict(src_ixs=[], target_ixs=[])
+            mini_batch = dict(src_sent=[], src_ixs=[], target_sent=[], target_ixs=[])
 
             if start > len(self.dataset) - self.batch_size:
                 ixs = np.arange(len(self.dataset))
                 np.random.shuffle(ixs)
                 self.dataset = list(np.array(self.dataset)[ixs])
+                self.epoch += 1
                 start = 0
                 print 'end of batch, shuffle...'
 
-            cur_pairs = self.dataset[start:start + self.batch_size]
+            cur_batch = self.dataset[start:start + self.batch_size]
 
-            maxlen_src = max([len(s) for s, t in cur_pairs])
-            maxlen_target = max([len(t) for s, t in cur_pairs])
+            maxlen_src = max([len(sample['src_ixs']) for sample in cur_batch])
+            maxlen_target = max([len(sample['target_ixs']) for sample in cur_batch])
 
             # padding with zero
-            for src_ix, target_ix in cur_pairs:
-                src_ix_padded = src_ix + [0] * (maxlen_src - len(src_ix))
-                target_ix_padded = target_ix + [0] * (maxlen_target - len(target_ix))
-                cur_batch['src_ixs'].append(src_ix_padded)
-                cur_batch['target_ixs'].append(target_ix_padded)
+            for sample in cur_batch:
+                src_ix_padded = sample['src_ixs'] + [0] * (maxlen_src - len(sample['src_ixs']))
+                target_ix_padded = sample['target_ixs'] + [0] * (maxlen_target - len(sample['target_ixs']))
+                mini_batch['src_sent'].append(sample['src_sent'])
+                mini_batch['target_sent'].append(sample['target_sent'])
+                mini_batch['src_ixs'].append(src_ix_padded)
+                mini_batch['target_ixs'].append(target_ix_padded)
 
             start += self.batch_size
 
-            yield cur_batch
+            yield mini_batch
 
     def next_batch(self):
         return self.batch_generator.next()
@@ -216,15 +220,15 @@ class Batcher(object):
 
 if __name__=='__main__':
     # step 1.
-    merge_and_encode(root_dir='../NMT_data/chosun-form1',
-                     fname='./data/raw_utf-8.txt')
+    # merge_and_encode(root_dir='../NMT_data/chosun-form1',
+    #                  fname='./data/raw_utf-8.txt')
     # merge_and_encode(root_dir='../NMT_data/chosun-form2',
     #                  fname='./data/raw_utf-8-2.txt')
 
     # step 2. make each corpora text file
-    preprocess_rawcorpus(raw_corpus_path='./data/raw_utf-8.txt',
-                         kor_file_path='./data/raw_corpora.ko',
-                         hanja_file_path='./data/raw_corpora.hanja', sep=u'【태백산사고본】')
+    # preprocess_rawcorpus(raw_corpus_path='./data/raw_utf-8.txt',
+    #                      kor_file_path='./data/raw_corpora.ko',
+    #                      hanja_file_path='./data/raw_corpora.hanja', sep=u'【태백산사고본】')
     # preprocess_rawcorpus(raw_corpus_path='./data/raw_utf-8-2.txt',
     #                      kor_file_path='./data/raw_corpora-2.ko',
     #                      hanja_file_path='./data/raw_corpora-2.hanja', sep=u'【원본】')
@@ -242,7 +246,7 @@ if __name__=='__main__':
     # valid_set = pickle.load(file('./data/train.pkl', 'rb'))
     # test_set = pickle.load(file('./data/train.pkl', 'rb'))
     # word2ix = pickle.load(file('./data/word2ix.pkl', 'rb'))
-    #
+
     # train_batcher = Batcher(train_set, batch_size=10)
     # b = train_batcher.next_batch()
     #
