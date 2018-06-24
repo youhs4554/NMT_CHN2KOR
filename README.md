@@ -11,8 +11,11 @@
 
     ## Package install
     > pip install -r requirements.txt
-
-    ## Dataset Link
+    
+    ## Pretrained Model
+    > https://drive.google.com/open?id=1mBsNqaaRLZtLzHjhiocJV9qe57_wyIDU
+    
+    ## Dataset
     - raw parallel corpora (CHN-KOR)
     - train/valid/test
     > https://drive.google.com/open?id=1taSYAJE2hbRhTKEE7bACOEtKL54jg5aZ

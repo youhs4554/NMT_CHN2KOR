@@ -20,9 +20,9 @@ tf.app.flags.DEFINE_integer("START", 2, "token for start of sentence(only target
 tf.app.flags.DEFINE_integer("END", 3, "token for end of sentence(only target language)")
 
 # path
-tf.app.flags.DEFINE_string("pretrained_model_path", '../NMT_save/models', "model save path")
-tf.app.flags.DEFINE_string("save_model_path", '../NMT_save/models_diary', "model save path")
-tf.app.flags.DEFINE_string("log_path", '../NMT_save/logs', "model save path")
+tf.app.flags.DEFINE_string("pretrained_model_path", './NMT_save/models', "model save path")
+tf.app.flags.DEFINE_string("save_model_path", './NMT_save/models_diary', "model save path")
+tf.app.flags.DEFINE_string("log_path", './NMT_save/logs', "model save path")
 
 # which gpu?
 tf.app.flags.DEFINE_string("gpu", "0", "Which GPU to use")
