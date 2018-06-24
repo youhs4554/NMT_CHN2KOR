@@ -26,7 +26,7 @@
     > https://drive.google.com/open?id=16FBfjb-nJOlqOpg49-zHltGKuRth4155
     
 # Usage
->After download dataset/results files, extract *.tar.gz
+>After download above required files, extract *.tar.gz
     
     # extract *.tar.gz
     cat *.tar.gz | tar -xvzf - -i
