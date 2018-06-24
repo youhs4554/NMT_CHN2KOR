@@ -1,12 +1,9 @@
 #-*- coding: utf-8 -*-
-from numpy.core.defchararray import startswith
 import numpy as np
 import glob
-import os, sys
-import pickle
-import os,sys
-from konlpy.tag import Kkma, Komoran, Hannanum, Twitter, Mecab
-from konlpy.utils import pprint
+import json
+import os
+from konlpy.tag import Kkma
 from collections import Counter
 import re
 import tqdm
@@ -82,12 +79,12 @@ class Dataset(object):
         self.test = self.samples[len(self.train) + len(self.valid):]
 
         # save datasets
-        pickle.dump(self.train, file('./data/train.pkl', 'wb'))
-        pickle.dump(self.valid, file('./data/valid.pkl', 'wb'))
-        pickle.dump(self.test, file('./data/test.pkl', 'wb'))
+        json.dump(self.train, file('./data/train.json', 'wb'))
+        json.dump(self.valid, file('./data/valid.json', 'wb'))
+        json.dump(self.test, file('./data/test.json', 'wb'))
 
         # save word2ix
-        pickle.dump(self.word2ix, file('./data/word2ix.pkl', 'wb'))
+        json.dump(self.word2ix, file('./data/word2ix.json', 'wb'))
 
     def create_vocab(self, src_file, target_file, vocab_size):
         # initialize nlp tool
@@ -219,6 +216,7 @@ class Batcher(object):
 
 
 if __name__=='__main__':
+    pass
     # step 1.
     # merge_and_encode(root_dir='../NMT_data/chosun-form1',
     #                  fname='./data/raw_utf-8.txt')
@@ -239,19 +237,4 @@ if __name__=='__main__':
     #     os.remove(k); os.remove(h)
 
     # step 3. preprocess & save dataset
-    dataset = Dataset(src_file='./data/raw_corpora.hanja', target_file='./data/raw_corpora.ko', vocab_size=40000)
-
-    # # load from files
-    # train_set = pickle.load(file('./data/train.pkl', 'rb'))
-    # valid_set = pickle.load(file('./data/train.pkl', 'rb'))
-    # test_set = pickle.load(file('./data/train.pkl', 'rb'))
-    # word2ix = pickle.load(file('./data/word2ix.pkl', 'rb'))
-
-    # train_batcher = Batcher(train_set, batch_size=10)
-    # b = train_batcher.next_batch()
-    #
-    # ix2word = dict(src=None, target=None)
-    # ix2word['src'] = dict(zip(word2ix['src'].values(), word2ix['src'].keys()))
-    # ix2word['target'] = dict(zip(word2ix['target'].values(), word2ix['target'].keys()))
-    #
-    # print ' '.join([ix2word['target'][i] for i in b['target_ixs'][5]])
+    # dataset = Dataset(src_file='./data/raw_corpora.hanja', target_file='./data/raw_corpora.ko', vocab_size=40000)

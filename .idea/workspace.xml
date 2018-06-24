@@ -2,12 +2,30 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="db2c5ed8-afee-41d2-87d0-f81d147c1631" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/languagedata_cooker.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/COCOEval_scores.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/NMTEval_scores.py" beforeDir="false" afterPath="$PROJECT_DIR$/NMTEval_scores.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/download.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/languagedata_cooker.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hanzi/.npmignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hanzi/.travis.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hanzi/LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hanzi/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hanzi/changelog.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hanzi/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hanzi/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hanzi/test/decomposer.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hanzi/test/dictionary.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/hanzi/test/get_examples.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parallel_corpus DB.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pointer-generator network.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocess.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/readline.js" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,11 +36,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model.py">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="307" column="44" selection-start-line="307" selection-start-column="44" selection-end-line="307" selection-end-column="44" />
+            <state relative-caret-position="570">
+              <caret line="30" selection-start-line="30" selection-end-line="30" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -30,13 +48,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="languagedata_cooker.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/languagedata_cooker.py">
+      <file leaf-file-name="data_utils.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/data_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2128">
-              <caret line="112" lean-forward="true" selection-start-line="112" selection-end-line="112" />
+            <state relative-caret-position="-2950">
+              <caret line="1" selection-start-line="1" selection-end-line="1" />
               <folding>
-                <element signature="e#24#43#0" expanded="true" />
+                <element signature="e#23#41#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -45,8 +63,20 @@
       <file leaf-file-name="config.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="8" selection-start-line="8" selection-end-line="8" />
+            <state relative-caret-position="57">
+              <caret line="3" column="39" selection-start-line="3" selection-start-column="29" selection-end-line="3" selection-end-column="39" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="988">
+                <caret line="52" column="38" lean-forward="true" selection-start-line="52" selection-start-column="38" selection-end-line="52" selection-end-column="38" />
+              </first_editor>
+              <second_editor />
             </state>
           </provider>
         </entry>
@@ -54,26 +84,8 @@
       <file leaf-file-name="NMTEval_scores.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/NMTEval_scores.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1938">
-              <caret line="102" column="30" selection-start-line="102" selection-start-column="30" selection-end-line="102" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="COCOEval_scores.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/COCOEval_scores.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="29" column="37" lean-forward="true" selection-start-line="29" selection-start-column="37" selection-end-line="29" selection-end-column="37" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="readline.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/readline.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="20" selection-start-line="20" selection-end-line="20" />
+            <state relative-caret-position="-802">
+              <caret line="19" selection-start-line="19" selection-end-line="19" />
             </state>
           </provider>
         </entry>
@@ -89,11 +101,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>train.pkl</find>
-      <find>tmp_file</find>
-      <find>kkma</find>
-      <find>kkm</find>
-      <find>.txt</find>
       <find>go</find>
       <find>self.samples</find>
       <find>end</find>
@@ -119,6 +126,11 @@
       <find>vocab</find>
       <find>비국</find>
       <find>gold_va</find>
+      <find>data_eval</find>
+      <find>pretrained_model</find>
+      <find>u7532</find>
+      <find>pickle</find>
+      <find>gpu</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -129,37 +141,49 @@
       <list>
         <option value="$PROJECT_DIR$/download.sh" />
         <option value="$PROJECT_DIR$/csv_cooker.py" />
-        <option value="$PROJECT_DIR$/data_utils.py" />
         <option value="$PROJECT_DIR$/languagedata_cooker.py" />
-        <option value="$PROJECT_DIR$/model.py" />
-        <option value="$PROJECT_DIR$/config.py" />
+        <option value="$PROJECT_DIR$/data_utils.py" />
         <option value="$PROJECT_DIR$/NMTEval_scores.py" />
+        <option value="$PROJECT_DIR$/model.py" />
+        <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/config.py" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1" />
-    <option name="y" value="76" />
-    <option name="width" value="946" />
-    <option name="height" value="994" />
+    <option name="x" value="792" />
+    <option name="y" value="1" />
+    <option name="width" value="1127" />
+    <option name="height" value="922" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="NMT_CRC" type="b2602c69:ProjectViewProjectNode" />
-              <item name="NMT_CRC" type="462c0819:PsiDirectoryNode" />
+              <item name="NMT" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NMT" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NMT" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NMT" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NMT" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NMT" type="462c0819:PsiDirectoryNode" />
+              <item name="results" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -196,7 +220,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.csv_cooker">
+  <component name="RunManager" selected="Python.model">
     <configuration name="download.sh" type="BashConfigurationType" factoryName="Bash">
       <module name="NMT" />
       <option name="INTERPRETER_OPTIONS" value="bash" />
@@ -320,8 +344,8 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/model.py" />
-      <option name="PARAMETERS" value="CUDA_VISIBLE_DEVICES=0" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="--mode=demo --GPU=5" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -336,9 +360,9 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.csv_cooker" />
-        <item itemvalue="Python.NMTEval_scores" />
         <item itemvalue="Python.model" />
+        <item itemvalue="Python.NMTEval_scores" />
+        <item itemvalue="Python.csv_cooker" />
         <item itemvalue="Python.data_utils" />
         <item itemvalue="Python.COCOEval_scores" />
       </list>
@@ -359,16 +383,18 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1054" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2528978" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5005348" side_tool="true" weight="0.32897604" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49946752" weight="0.32897604" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32908705" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49946752" visible="true" weight="0.32800853" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32908705" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.33013844" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49946523" visible="true" weight="0.32800853" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49946752" weight="0.39760348" />
+      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.49946523" weight="0.32694355" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49946752" weight="0.3972311" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -377,25 +403,24 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32908705" />
     </layout>
     <layout-to-restore>
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25508022" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49946752" weight="0.32800853" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2528978" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Version Control" order="9" weight="0.32908705" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49946752" weight="0.32897604" />
-      <window_info anchor="bottom" id="Python Console" order="10" weight="0.33769062" />
+      <window_info anchor="bottom" id="Python Console" order="7" weight="0.33013844" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49946752" weight="0.39760348" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49946752" weight="0.3972311" />
       <window_info anchor="right" x="0" y="0" width="430" height="854" id="Documentation" order="3" side_tool="true" weight="0.32941177" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" sideWeight="0.49946523" visible="true" weight="0.32897604" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5005348" side_tool="true" visible="true" weight="0.32897604" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" sideWeight="0.49946523" visible="true" weight="0.32694355" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5005348" side_tool="true" weight="0.32897604" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="Version Control" order="10" weight="0.32908705" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32908705" />
       <window_info id="Favorites" order="2" side_tool="true" />
     </layout-to-restore>
@@ -411,42 +436,25 @@
           <line>48</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>250</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>342</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="25" />
+      <option name="time" value="27" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5474">
-          <caret line="241" column="15" lean-forward="true" selection-start-line="241" selection-start-column="15" selection-end-line="241" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="46">
-          <caret line="2" column="14" lean-forward="true" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5152">
-          <caret line="236" selection-start-line="236" selection-end-line="236" />
-          <folding>
-            <element signature="e#23#69#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model.py">
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>
@@ -467,12 +475,12 @@
         <state relative-caret-position="5152">
           <caret line="236" selection-start-line="236" selection-end-line="236" />
           <folding>
-            <element signature="e#23#69#0" expanded="true" />
+            <element signature="e#23#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model.py">
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>
@@ -488,32 +496,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/preprocess.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="17" column="26" lean-forward="true" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/preprocess.py" />
     <entry file="file://$PROJECT_DIR$/result.hypo.txt" />
     <entry file="file://$PROJECT_DIR$/data_utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4522">
           <caret line="238" selection-start-line="238" selection-end-line="238" />
           <folding>
-            <element signature="e#23#69#0" expanded="true" />
+            <element signature="e#23#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/download.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="12" selection-start-line="7" selection-start-column="12" selection-end-line="7" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model.py">
+    <entry file="file://$PROJECT_DIR$/download.sh" />
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3515">
           <caret line="185" selection-start-line="185" selection-end-line="185" />
@@ -530,7 +526,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model.py">
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>
@@ -546,24 +542,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/download.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="7" column="12" selection-start-line="7" selection-start-column="12" selection-end-line="7" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/download.sh" />
     <entry file="file://$PROJECT_DIR$/data_utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5152">
           <caret line="236" selection-start-line="236" selection-end-line="236" />
           <folding>
-            <element signature="e#23#69#0" expanded="true" />
+            <element signature="e#23#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model.py">
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5474">
           <caret line="241" column="15" selection-start-line="241" selection-start-column="15" selection-end-line="241" selection-end-column="15" />
@@ -585,19 +575,13 @@
         <state relative-caret-position="5152">
           <caret line="236" selection-start-line="236" selection-end-line="236" />
           <folding>
-            <element signature="e#23#69#0" expanded="true" />
+            <element signature="e#23#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/download.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="7" column="12" selection-start-line="7" selection-start-column="12" selection-end-line="7" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model.py">
+    <entry file="file://$PROJECT_DIR$/download.sh" />
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5474">
           <caret line="241" column="15" lean-forward="true" selection-start-line="241" selection-start-column="15" selection-end-line="241" selection-end-column="15" />
@@ -619,12 +603,12 @@
         <state relative-caret-position="5152">
           <caret line="236" selection-start-line="236" selection-end-line="236" />
           <folding>
-            <element signature="e#23#69#0" expanded="true" />
+            <element signature="e#23#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model.py">
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>
@@ -645,12 +629,12 @@
         <state relative-caret-position="5152">
           <caret line="236" selection-start-line="236" selection-end-line="236" />
           <folding>
-            <element signature="e#23#69#0" expanded="true" />
+            <element signature="e#23#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model.py">
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>
@@ -681,11 +665,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_eval/raw_corpora.ko">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-114" />
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/data_eval/raw_corpora.ko" />
     <entry file="file://$USER_HOME$/.virtualenvs/NMT/local/lib/python2.7/site-packages/tensorflow/python/framework/common_shapes.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="181">
@@ -707,106 +687,71 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/download.sh">
+    <entry file="file://$PROJECT_DIR$/download.sh" />
+    <entry file="file://$PROJECT_DIR$/data_eval/hypo_val.json" />
+    <entry file="file://$PROJECT_DIR$/data/raw_corpora.ko" />
+    <entry file="file://$PROJECT_DIR$/readline.js" />
+    <entry file="file://$PROJECT_DIR$/data/raw_corpora.hanja" />
+    <entry file="file://$PROJECT_DIR$/pointer-generator network.ipynb" />
+    <entry file="file://$PROJECT_DIR$/preprocess.py" />
+    <entry file="file://$PROJECT_DIR$/COCOEval_scores.py" />
+    <entry file="file://$PROJECT_DIR$/data/train.json" />
+    <entry file="file://$PROJECT_DIR$/languagedata_cooker.py" />
+    <entry file="file://$PROJECT_DIR$/data/New">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="12" selection-start-line="7" selection-start-column="12" selection-end-line="7" selection-end-column="12" />
+        <state relative-caret-position="228">
+          <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data_eval/hypo_val.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config.py">
+    <entry file="file://$PROJECT_DIR$/data/test.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
+        <state relative-caret-position="57">
+          <caret column="406" selection-start-column="145" selection-end-column="406" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2950">
+          <caret line="1" selection-start-line="1" selection-end-line="1" />
+          <folding>
+            <element signature="e#23#41#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/NMTEval_scores.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1938">
-          <caret line="102" column="30" selection-start-line="102" selection-start-column="30" selection-end-line="102" selection-end-column="30" />
+        <state relative-caret-position="-802">
+          <caret line="19" selection-start-line="19" selection-end-line="19" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/raw_corpora.ko">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="106">
-          <caret column="2023" lean-forward="true" selection-start-column="2023" selection-end-column="2023" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/readline.js">
+    <entry file="file://$PROJECT_DIR$/config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
+        <state relative-caret-position="57">
+          <caret line="3" column="39" selection-start-line="3" selection-start-column="29" selection-end-line="3" selection-end-column="39" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/raw_corpora.hanja">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="477">
-          <caret line="4166" column="40" selection-start-line="4166" selection-start-column="40" selection-end-line="4166" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model.py">
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="307" column="44" selection-start-line="307" selection-start-column="44" selection-end-line="307" selection-end-column="44" />
+        <state relative-caret-position="570">
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pointer-generator network.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/preprocess.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="17" column="26" lean-forward="true" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11">
-          <caret line="233" column="85" lean-forward="true" selection-start-line="233" selection-start-column="85" selection-end-line="233" selection-end-column="85" />
-          <folding>
-            <element signature="e#23#69#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/COCOEval_scores.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="29" column="37" lean-forward="true" selection-start-line="29" selection-start-column="37" selection-end-line="29" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/data/train.json">
-      <provider selected="true" editor-type-id="LargeFileEditor">
-        <state relative-caret-position="114">
-          <caret column="818" selection-start-column="818" selection-end-column="818" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/languagedata_cooker.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2128">
-          <caret line="112" lean-forward="true" selection-start-line="112" selection-end-line="112" />
-          <folding>
-            <element signature="e#24#43#0" expanded="true" />
-          </folding>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="988">
+            <caret line="52" column="38" lean-forward="true" selection-start-line="52" selection-start-column="38" selection-end-line="52" selection-end-column="38" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>

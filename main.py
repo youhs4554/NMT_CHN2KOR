@@ -12,22 +12,22 @@ dim_emb = FLAGS.dim_emb
 
 ####
 from config import FLAGS
-import pickle
+import json
 from data_utils import Batcher
 
 # load from files
-train_set = pickle.load(file('./data_eval/train.pkl', 'rb'))
-valid_set = pickle.load(file('./data_eval/valid.pkl', 'rb'))
-test_set = pickle.load(file('./data_eval/test.pkl', 'rb'))
+train_set = json.load(file('./data/train.json', 'rb'))
+valid_set = json.load(file('./data/valid.json', 'rb'))
+test_set = json.load(file('./data/test.json', 'rb'))
 
-# eval_set = pickle.load(file('./data_eval/samples.pkl','rb'))
-word2ix = pickle.load(file('./data/word2ix.pkl', 'rb'))
+word2ix = json.load(file('./data/word2ix.json', 'rb'))
 
 # prepare ix2word
 ix2word = dict(src=None, target=None)
 ix2word['src'] = dict(zip(word2ix['src'].values(), word2ix['src'].keys()))
 ix2word['target'] = dict(zip(word2ix['target'].values(), word2ix['target'].keys()))
 
+os.environ["CUDA_VISIBLE_DEVICES"]=FLAGS.gpu
 
 def RNNCellWrapper(num_units, num_layers, keep_prob, attention=False, attention_mechanism=None, attention_layer_size=None):
     cells = []
@@ -112,7 +112,7 @@ def Build_NMT_Model(x,y,decoding_mask, keep_prob,
     return decoder_outputs
 
 
-def train(fine_tune):
+def train():
     train_batcher = Batcher(train_set, batch_size=batch_size)
     valid_batcher = Batcher(valid_set, batch_size=batch_size)
 
@@ -129,7 +129,7 @@ def train(fine_tune):
     decoding_mask = tf.cast(tf.sign(y), 'float32')
 
     train_src = True
-    train_target = False if fine_tune else True
+    train_target = False if FLAGS.fine_tune else True
 
     src_embeddings = tf.get_variable('src_embeddings', [src_vocab_size, dim_emb], trainable=train_src)
     target_embeddings = tf.get_variable('target_embeddings', [target_vocab_size, dim_emb], trainable=train_target)
@@ -149,14 +149,6 @@ def train(fine_tune):
 
     global_step = tf.Variable(0, trainable=False)
 
-    # gradient clip
-    # params = tf.trainable_variables()
-    #
-    # # opt = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
-    # # gradients = tf.gradients(loss, params)
-    # # clipped_gradients, norm = tf.clip_by_global_norm(gradients, 5.0)  # max_gradient_norm
-    # # optimizer = opt.apply_gradients(zip(clipped_gradients, params), global_step=global_step)  # decoder
-
     # Adam
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss, global_step=global_step)
 
@@ -165,7 +157,7 @@ def train(fine_tune):
     sess.run(tf.global_variables_initializer())
 
     var_list = tf.trainable_variables()
-    if fine_tune:
+    if FLAGS.fine_tune:
         var_list.append(target_embeddings)
 
     # savers
@@ -174,10 +166,10 @@ def train(fine_tune):
     pretrained_model_path = FLAGS.pretrained_model_path
     save_model_path = FLAGS.save_model_path
 
-    if not fine_tune:
+    if not FLAGS.fine_tune:
          save_model_path = pretrained_model_path
 
-    if fine_tune:
+    if FLAGS.fine_tune:
         ckpt = tf.train.latest_checkpoint(pretrained_model_path)
         print 'restore pre-trained params from {} ...'.format(os.path.splitext(ckpt)[0])
         saver.restore(sess, ckpt)
@@ -254,7 +246,9 @@ def eval():
 
     saver = tf.train.Saver()
 
-    ckpt = tf.train.latest_checkpoint(FLAGS.save_model_path)
+    model_path = FLAGS.save_model_path if FLAGS.fine_tune else FLAGS.pretrained_model_path
+
+    ckpt = tf.train.latest_checkpoint(model_path)
 
     if ckpt:
         saver.restore(sess, ckpt)
@@ -305,9 +299,60 @@ def eval():
         cnt += 1
         print cnt
 
-    pickle.dump(datasetGold, file('./data_eval/gold_val.pkl', 'wb'))
-    pickle.dump(datasetHypo, file('./data_eval/hypo_val.pkl', 'wb'))
+    json.dump(datasetGold, file('./results/gold_val.json', 'wb'))
+    json.dump(datasetHypo, file('./results/hypo_val.json', 'wb'))
+
+def demo():
+    src_vocab_size = len(ix2word['src'])
+    target_vocab_size = len(ix2word['target'])
+
+    x = tf.placeholder('int32', [batch_size,None])
+    keep_prob = tf.placeholder('float32')
+
+    src_embeddings = tf.get_variable('src_embeddings', [src_vocab_size, dim_emb])
+    target_embeddings = tf.get_variable('target_embeddings', [target_vocab_size, dim_emb])
+
+    decoder_outputs = Build_NMT_Model(x=x, y=None, decoding_mask=None, keep_prob=keep_prob,
+                                      src_embeddings=src_embeddings, target_embeddings=target_embeddings, is_train=False)
+
+    # generated sentences
+    generated = decoder_outputs.sample_id
+
+    sess = tf.Session()
+
+    saver = tf.train.Saver()
+
+    model_path = FLAGS.save_model_path if FLAGS.fine_tune else FLAGS.pretrained_model_path
+
+    ckpt = tf.train.latest_checkpoint(model_path)
+
+    if ckpt:
+        saver.restore(sess, ckpt)
+    else:
+        raise IOError("Pre-trained model is required")
 
 
-# train(fine_tune=True)
-eval()
+    def convert_to_ids(dict, input_list):
+        return [dict.get(_in, FLAGS.UNK) for _in in input_list]
+
+    usr = raw_input("Input : ").strip().decode('utf-8')
+    usr_char = list(usr.replace(u'\ufeff', '').replace(' ', ''))
+
+    usr_char_ids = convert_to_ids(word2ix['src'], usr_char)
+
+    eval_feed = {x: [usr_char_ids],
+                 keep_prob: 1.0}
+
+    generated_sent = sess.run(generated, feed_dict=eval_feed)
+
+    hypo = [ ix2word['target'][i] for i in generated_sent[0] ]
+    hypo_truncated = ''.join(hypo[:np.argmax(np.array(hypo)=='<end>')])
+    print hypo_truncated
+
+if __name__ == '__main__':
+    if FLAGS.mode=='train':
+        train()
+    if FLAGS.mode=='eval':
+        eval()
+    if FLAGS.mode=='demo':
+        demo()

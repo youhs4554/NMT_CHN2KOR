@@ -96,8 +96,8 @@ def calculate_metrics(rng,datasetGTS,datasetRES):
 
 if __name__ == '__main__':
     import json
-    datasetGTS = json.load(file('./data/gold_val.json', 'rb'))
-    datasetRES = json.load(file('./data/hypo_val.json', 'rb'))
+    datasetGTS = json.load(file('./results/gold_val.json', 'rb'))
+    datasetRES = json.load(file('./results/hypo_val.json', 'rb'))
     rng = range(len(datasetGTS['annotations']))
 
     print calculate_metrics(rng,datasetGTS,datasetRES)
