@@ -29,6 +29,10 @@ ix2word['target'] = dict(zip(word2ix['target'].values(), word2ix['target'].keys(
 
 os.environ["CUDA_VISIBLE_DEVICES"]=FLAGS.gpu
 
+def llprint(message):
+    sys.stdout.write(message)
+    sys.stdout.flush()
+
 def RNNCellWrapper(num_units, num_layers, keep_prob, attention=False, attention_mechanism=None, attention_layer_size=None):
     cells = []
     for _ in range(num_layers):
@@ -335,19 +339,25 @@ def demo():
     def convert_to_ids(dict, input_list):
         return [dict.get(_in, FLAGS.UNK) for _in in input_list]
 
-    usr = raw_input("Input : ").strip().decode('utf-8')
-    usr_char = list(usr.replace(u'\ufeff', '').replace(' ', ''))
+    while True:
+        try:
+            usr = raw_input("Input : ").strip().decode('utf-8')
+            usr_char = list(usr.replace(u'\ufeff', '').replace(' ', ''))
 
-    usr_char_ids = convert_to_ids(word2ix['src'], usr_char)
+            usr_char_ids = convert_to_ids(word2ix['src'], usr_char)
 
-    eval_feed = {x: [usr_char_ids],
-                 keep_prob: 1.0}
+            eval_feed = {x: [usr_char_ids],
+                         keep_prob: 1.0}
 
-    generated_sent = sess.run(generated, feed_dict=eval_feed)
+            generated_sent = sess.run(generated, feed_dict=eval_feed)
 
-    hypo = [ ix2word['target'][i] for i in generated_sent[0] ]
-    hypo_truncated = ''.join(hypo[:np.argmax(np.array(hypo)=='<end>')])
-    print hypo_truncated
+            hypo = [ ix2word['target'][i] for i in generated_sent[0] ]
+            hypo_truncated = ''.join(hypo[:np.argmax(np.array(hypo)=='<end>')])
+            print 'Output : ', hypo_truncated
+            llprint("\n[Ctrl+C] to quit\n\n")
+        except KeyboardInterrupt:
+            break
+
 
 if __name__ == '__main__':
     if FLAGS.mode=='train':
