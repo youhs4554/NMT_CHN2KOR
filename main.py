@@ -3,6 +3,17 @@ from tensorflow.python.layers.core import Dense
 from config import FLAGS
 import os, sys
 import numpy as np
+import json
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
+
+fontC = font_manager.FontProperties(fname='./simhei.ttf')
+fontC.set_family('simhei')
+fontC.set_size(5)
+
+fontK = font_manager.FontProperties(fname='./MalgunGothic.ttf')
+fontK.set_family('MalgunGothic')
+fontK.set_size(5)
 
 # model configuration
 batch_size = FLAGS.batch_size
@@ -12,7 +23,6 @@ dim_emb = FLAGS.dim_emb
 
 ####
 from config import FLAGS
-import json
 from data_utils import Batcher
 
 # load from files
@@ -29,11 +39,45 @@ ix2word['target'] = dict(zip(word2ix['target'].values(), word2ix['target'].keys(
 
 os.environ["CUDA_VISIBLE_DEVICES"]=FLAGS.gpu
 
+def plot_attention(attention_map, input_tags = None, output_tags = None):
+    attn_len = len(attention_map)
+
+    # Plot the attention_map
+    plt.clf()
+    f = plt.figure(figsize=(15, 10))
+    ax = f.add_subplot(1, 1, 1)
+
+    # Add image
+    i = ax.imshow(attention_map, interpolation='nearest', cmap='Blues')
+
+    # Add colorbar
+    cbaxes = f.add_axes([0.2, 0, 0.6, 0.03])
+    cbar = f.colorbar(i, cax=cbaxes, orientation='horizontal')
+    cbar.ax.set_xlabel('Alpha value (Probability output of the "softmax")', labelpad=2)
+
+    # Add labels
+    ax.set_yticks(range(attn_len))
+    if output_tags != None:
+      ax.set_yticklabels(output_tags[:attn_len], fontproperties=fontK)
+
+    ax.set_xticks(range(attn_len))
+    if input_tags != None:
+      ax.set_xticklabels(input_tags[:attn_len], rotation=45, fontproperties=fontC)
+
+    ax.set_xlabel('Input Sequence')
+    ax.set_ylabel('Output Sequence')
+
+    # add grid and legend
+    ax.grid()
+
+    plt.show()
+
+
 def llprint(message):
     sys.stdout.write(message)
     sys.stdout.flush()
 
-def RNNCellWrapper(num_units, num_layers, keep_prob, attention=False, attention_mechanism=None, attention_layer_size=None):
+def RNNCellWrapper(num_units, num_layers, keep_prob, attention=False, attention_mechanism=None):
     cells = []
     for _ in range(num_layers):
         cell = tf.nn.rnn_cell.GRUCell(num_units=num_units)
@@ -44,7 +88,8 @@ def RNNCellWrapper(num_units, num_layers, keep_prob, attention=False, attention_
 
     if attention:
         # decoder cell with attention
-        cell = tf.contrib.seq2seq.AttentionWrapper(cell, attention_mechanism, attention_layer_size=attention_layer_size)
+        cell = tf.contrib.seq2seq.AttentionWrapper(cell=cell, attention_mechanism=attention_mechanism,
+                                                   alignment_history=True, attention_layer_size=None)
         cell = tf.nn.rnn_cell.DropoutWrapper(cell, output_keep_prob=keep_prob)
 
     return cell
@@ -58,11 +103,11 @@ def Build_NMT_Model(x,y,decoding_mask, keep_prob,
     # Encoder (bidirectional)
     encoder_cell_fw = RNNCellWrapper(num_units=num_units,
                                      num_layers=num_layers,
-                                     keep_prob= keep_prob)
+                                     keep_prob=keep_prob)
 
     encoder_cell_bw = RNNCellWrapper(num_units=num_units,
                                      num_layers=num_layers,
-                                     keep_prob= keep_prob)
+                                     keep_prob=keep_prob)
 
     # embedding layer for src language
     encoder_embed = tf.nn.embedding_lookup(src_embeddings, x)
@@ -77,14 +122,13 @@ def Build_NMT_Model(x,y,decoding_mask, keep_prob,
     encoder_outputs_concat = tf.concat(encoder_outputs, axis=-1)
 
     # specify attention mechanism
-    attention_mechanism = tf.contrib.seq2seq.BahdanauAttention(num_units=num_units,
-                                                               memory=encoder_outputs_concat,
-                                                               memory_sequence_length=len_x)
-
+    attention_mechanism = tf.contrib.seq2seq.LuongAttention(num_units=num_units,
+                                                            memory=encoder_outputs_concat,
+                                                            memory_sequence_length=len_x)
     decoder_cell = RNNCellWrapper(num_units=num_units,
                                   num_layers=num_layers,
                                   keep_prob=keep_prob,
-                                  attention=True, attention_mechanism=attention_mechanism, attention_layer_size=num_units)
+                                  attention=True, attention_mechanism=attention_mechanism)
 
     if is_train:
         y_shifted = tf.concat([tf.fill([batch_size, 1], FLAGS.START), y[:, :-1]], 1)
@@ -110,10 +154,10 @@ def Build_NMT_Model(x,y,decoding_mask, keep_prob,
         decoder_cell.zero_state(dtype='float32', batch_size=batch_size),
         output_layer=decoder_projection_layer)
 
-    decoder_outputs, _, _ = tf.contrib.seq2seq.dynamic_decode(decoder,
-                                                              maximum_iterations=None if is_train else maxlen)
+    decoder_outputs, decoder_states, _ = tf.contrib.seq2seq.dynamic_decode(decoder,
+                                                                           maximum_iterations=None if is_train else maxlen)
 
-    return decoder_outputs
+    return decoder_outputs, decoder_states
 
 
 def train():
@@ -138,8 +182,8 @@ def train():
     src_embeddings = tf.get_variable('src_embeddings', [src_vocab_size, dim_emb], trainable=train_src)
     target_embeddings = tf.get_variable('target_embeddings', [target_vocab_size, dim_emb], trainable=train_target)
 
-    decoder_outputs = Build_NMT_Model(x=x,y=y,decoding_mask=decoding_mask, keep_prob=keep_prob,
-                                      src_embeddings=src_embeddings, target_embeddings=target_embeddings, is_train=True)
+    decoder_outputs, decoder_states = Build_NMT_Model(x=x,y=y,decoding_mask=decoding_mask, keep_prob=keep_prob,
+                                                      src_embeddings=src_embeddings, target_embeddings=target_embeddings, is_train=True)
 
     # logits
     logits = decoder_outputs.rnn_output
@@ -192,10 +236,9 @@ def train():
         train_batch = train_batcher.next_batch()
         if np.any(np.max(train_batch['src_ixs'], axis=1)==0) or np.any(np.max(train_batch['target_ixs'], axis=1)==0): continue
         train_feed = { x:train_batch['src_ixs'], y:train_batch['target_ixs'],
-                       learning_rate : 1e-4, keep_prob : 0.5 }
+                       learning_rate : 1e-4, keep_prob : 0.8 }
 
         _, train_loss, train_summary = sess.run([optimizer, loss, loss_summary], feed_dict=train_feed)
-
 
         step = global_step.eval(sess)
 
@@ -238,8 +281,8 @@ def eval():
     src_embeddings = tf.get_variable('src_embeddings', [src_vocab_size, dim_emb])
     target_embeddings = tf.get_variable('target_embeddings', [target_vocab_size, dim_emb])
 
-    decoder_outputs = Build_NMT_Model(x=x, y=None, decoding_mask=None, keep_prob=keep_prob,
-                                      src_embeddings=src_embeddings, target_embeddings=target_embeddings, is_train=False)
+    decoder_outputs, decoder_states = Build_NMT_Model(x=x, y=None, decoding_mask=None, keep_prob=keep_prob,
+                                                      src_embeddings=src_embeddings, target_embeddings=target_embeddings, is_train=False)
 
     # generated sentences
     generated = decoder_outputs.sample_id
@@ -284,6 +327,14 @@ def eval():
 
         generated_sent = sess.run(generated, feed_dict=eval_feed)
 
+        if FLAGS.attn_visualize:
+            alignments = sess.run(decoder_states.alignment_history.stack(), feed_dict=eval_feed)
+            input_tags = [ix2word['src'][ix] for ix in cur_batch['src_ixs'][0]]
+            output_tags = [ix2word['target'][ix] for ix in cur_batch['target_ixs'][0]]
+
+            # visualize attention alignments
+            plot_attention(alignments[:, 0, :], input_tags, output_tags)
+
         hypo = [ ix2word['target'][i] for i in generated_sent[0] ]
         hypo_truncated = ' '.join(hypo[:np.argmax(np.array(hypo)=='<end>')])
 
@@ -292,13 +343,6 @@ def eval():
 
         datasetGold['annotations'].append(dict(sentence_id=cnt, caption=gold_truncated))
         datasetHypo['annotations'].append(dict(sentence_id=cnt, caption=hypo_truncated))
-
-        #print ' '.join(hypo)
-        #print cur_batch['target_sent'][0]
-
-        #import ipdb
-        #ipdb.set_trace()
-
 
         cnt += 1
         print cnt
@@ -316,8 +360,8 @@ def demo():
     src_embeddings = tf.get_variable('src_embeddings', [src_vocab_size, dim_emb])
     target_embeddings = tf.get_variable('target_embeddings', [target_vocab_size, dim_emb])
 
-    decoder_outputs = Build_NMT_Model(x=x, y=None, decoding_mask=None, keep_prob=keep_prob,
-                                      src_embeddings=src_embeddings, target_embeddings=target_embeddings, is_train=False)
+    decoder_outputs, decoder_states = Build_NMT_Model(x=x, y=None, decoding_mask=None, keep_prob=keep_prob,
+                                                      src_embeddings=src_embeddings, target_embeddings=target_embeddings, is_train=False)
 
     # generated sentences
     generated = decoder_outputs.sample_id

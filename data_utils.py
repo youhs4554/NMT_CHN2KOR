@@ -64,11 +64,11 @@ class Dataset(object):
             src_ixs = []
             target_ixs = []
             for w in src_sent.split():
-                w = '<unk>' if w not in self.word2ix['src'] else w
+                w = self.word2ix['src'].get(w,'<unk>')
                 src_ixs.append(self.word2ix['src'][w])
 
             for w in target_sent.split():
-                w = '<unk>' if w not in self.word2ix['target'] else w
+                w = self.word2ix['target'].get(w,'<unk>')
                 target_ixs.append(self.word2ix['target'][w])
 
             self.samples[n] = dict(src_sent=src_sent,src_ixs=src_ixs, target_sent=target_sent, target_ixs=target_ixs)
@@ -105,10 +105,6 @@ class Dataset(object):
             src_sent = src_lines[i].strip().decode('utf-8')
             target_sent = target_lines[i].strip().decode('utf-8')
 
-            # extract named_entities for source language
-            named_entities = [tag[0] for tag in kkm.pos(target_sent) if
-                              tag[1] == 'OH']  # extract named-entities from target sentence
-
             # preprocess target_sent(remove comments and any other noise)
             target_sent = re.sub(r'\d*].*', '', target_sent)
             target_sent = re.sub(r'\([^)]*\)', '', target_sent)
@@ -117,16 +113,15 @@ class Dataset(object):
             # src/target pos-tags
             src_tags = kkm.pos(src_sent)
             target_tags = kkm.pos(target_sent)
+            
+            # extract named_entities for source language
+            named_entities = [tag[0] for tag in target_tags if
+                              tag[1] == 'OH']  # extract named-entities from target sentence
 
-            # symbols of target language
-            symbols = [ tag[0] for tag in target_tags if tag[1].startswith('S') ]
-
-            src_sent = ' '.join([tag[0] for tag in src_tags if not tag[1].startswith('S')])  # remove all symbols
+            # remove all symbols
+            src_sent = ' '.join([tag[0] for tag in src_tags if not tag[1].startswith('S')])
 
             target_sent = ' '.join([tag[0] for tag in target_tags if not tag[1].startswith('S')])
-
-            for sym in symbols:
-                target_sent = target_sent.replace(sym, '') # remove symbol
 
             for ne in named_entities:
                 src_sent = src_sent.replace(ne, '*' + ne + '*')
@@ -136,7 +131,7 @@ class Dataset(object):
             src_sent = ' '.join(src_sent.split('*'))
 
             if len(src_sent.split()) > 100 or len(target_sent.split()) > 100:
-               continue
+                continue
 
             cur_src_words = []
             for word in src_sent.split():

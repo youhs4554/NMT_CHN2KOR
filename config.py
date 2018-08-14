@@ -5,13 +5,12 @@ tf.app.flags.DEFINE_integer("batch_size", 64, "batch size")
 tf.app.flags.DEFINE_integer("num_units", 1024, "number of LSTM units")
 tf.app.flags.DEFINE_integer("num_layers", 2, "number of layers of RNN network")
 tf.app.flags.DEFINE_integer("dim_emb", 300, "dimension of word embedding")
-tf.app.flags.DEFINE_integer("attn_size", 512, "attention layer size")
 
-tf.app.flags.DEFINE_integer("valid_step", 300, "validation step period")
+tf.app.flags.DEFINE_integer("valid_step", 500, "validation step period")
 tf.app.flags.DEFINE_integer("save_ckpt_step", 1000, "model's ckpt file saving period")
 
-# fine_tune or not
 tf.app.flags.DEFINE_boolean("fine_tune", False, "fine tune or not")
+tf.app.flags.DEFINE_boolean("attn_visualize", False, "visualize attention alignments or not")
 
 # token config
 tf.app.flags.DEFINE_integer("PAD", 0, "token for padding")
